@@ -18,8 +18,6 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-from game import Directions
-from typing import List
 
 class SearchProblem:
     """
@@ -64,18 +62,17 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-
-
-def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
+def tinyMazeSearch(problem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
     sequence of moves will be incorrect, so only use this for tinyMaze.
     """
+    from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
+def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -92,27 +89,28 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
+def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
+def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def nullHeuristic(state, problem=None) -> float:
+def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
 
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directions]:
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 # Abbreviations
 bfs = breadthFirstSearch

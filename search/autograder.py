@@ -8,8 +8,8 @@
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and
-# Pieter Abbeel (pabbeel@cs.berkeley.edu).
+# Student side autograding was added by Brad Miller, Nick Hay,
+# Pieter Abbeel (pabbeel@cs.berkeley.edu), and edited by Noemi Chulo.
 
 
 # imports from python standard library
@@ -259,7 +259,9 @@ def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MA
 
     questions = []
     questionDicts = {}
+    questionTimeouts = {} # grader timeouts for each question
     test_subdirs = getTestSubdirs(testParser, testRoot, questionToGrade)
+
     for q in test_subdirs:
         subdir_path = os.path.join(testRoot, q)
         if not os.path.isdir(subdir_path) or q[0] == '.':
@@ -270,6 +272,9 @@ def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MA
         questionClass = getattr(testClasses, questionDict['class'])
         question = questionClass(questionDict, display)
         questionDicts[q] = questionDict
+        timeout = question.getTimeout()
+        if timeout:
+            questionTimeouts[q] = timeout
 
         # load test cases into question
         tests = filter(lambda t: re.match(r'[^#~.].*\.test\Z', t), os.listdir(subdir_path))
@@ -305,7 +310,7 @@ def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MA
         questions.append((q, question.getMaxPoints()))
 
     grades = grading.Grades(projectParams.PROJECT_NAME, questions,
-                            gsOutput=gsOutput, edxOutput=edxOutput, muteOutput=muteOutput)
+                            gsOutput=gsOutput, edxOutput=edxOutput, muteOutput=muteOutput, questionTimeouts=questionTimeouts)
     if questionToGrade == None:
         for q in questionDicts:
             for prereq in questionDicts[q].get('depends', '').split():

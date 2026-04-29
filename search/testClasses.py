@@ -27,16 +27,20 @@ class Question(object):
         print('Method not implemented: %s' % inspect.stack()[1][3])
         sys.exit(1)
 
-    def __init__(self, questionDict, display):
+    def __init__(self, questionDict, display, timeout=None):
         self.maxPoints = int(questionDict['max_points'])
         self.testCases = []
         self.display = display
+        self.timeout = int(questionDict["timeout"]) if "timeout" in questionDict else None
 
     def getDisplay(self):
         return self.display
 
     def getMaxPoints(self):
         return self.maxPoints
+
+    def getTimeout(self):
+        return self.timeout
 
     # Note that 'thunk' must be a function which accepts a single argument,
     # namely a 'grading' object

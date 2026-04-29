@@ -344,7 +344,6 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
-
 def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -356,15 +355,13 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
 
     This function should always return a number that is a lower bound on the
     shortest path from the state to a goal of the problem; i.e.  it should be
-    admissible.
+    admissible (as well as consistent).
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
     return 0 # Default to trivial solution
-
-
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -432,9 +429,14 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     Your heuristic for the FoodSearchProblem goes here.
 
+    This heuristic must be consistent to ensure correctness.  First, try to come
+    up with an admissible heuristic; almost all admissible heuristics will be
+    consistent as well.
+
     If using A* ever finds a solution that is worse uniform cost search finds,
-    your search may have a but our your heuristic is not admissible!  On the
-    other hand, inadmissible heuristics may find optimal solutions, so be careful.
+    your heuristic is *not* consistent, and probably not admissible!  On the
+    other hand, inadmissible or inconsistent heuristics may find optimal
+    solutions, so be careful.
 
     The state is a tuple ( pacmanPosition, foodGrid ) where foodGrid is a Grid
     (see game.py) of either True or False. You can call foodGrid.asList() to get
@@ -454,7 +456,6 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
     return 0
-
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
