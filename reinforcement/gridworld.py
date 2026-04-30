@@ -77,6 +77,9 @@ class Gridworld(mdp.MarkovDecisionProcess):
                     states.append(state)
         return states
 
+    # Hàm getReward dùng để tính R(s,a,s') trong công thức Bellman
+    # Hàm này tuân theo quy ước: Phần thưởng phụ thuộc vào trạng thái mà agent vừa rời 
+    # đi (state) chứ không phải trạng thái nó vừa đặt chân tới (nextState).
     def getReward(self, state, action, nextState):
         """
         Get reward for state, action, nextState transition.
@@ -85,12 +88,20 @@ class Gridworld(mdp.MarkovDecisionProcess):
         departed (as in the R+N book examples, which more or
         less use this convention).
         """
+        # Nếu AI đã ở trong trạng thái kết thúc, mọi điểm thưởng = 0
         if state == self.grid.terminalState:
             return 0.0
+        
+        # Trong Gridworld, các ô có điểm thưởng được lưu trữ giá trị trực tiếp trên lưới (grid).
+        # Khi AI đang đứng tại một ô mà giá trị của nó là một số (int hoặc float), hành động tiếp theo của nó 
+        # sẽ là "thoát" khỏi ô đó để nhận điểm. Hàm sẽ trả về chính giá trị điểm thưởng đó.
         x, y = state
         cell = self.grid[x][y]
         if type(cell) == int or type(cell) == float:
             return cell
+        # Nếu ô hiện tại không phải là ô kết thúc (chỉ là một ô trống bình thường), hàm sẽ trả về self.livingReward.
+        # self.livingReward là 1 số âm nhỏ, giống như phí phạt cho mỗi bước đi.Điều này buộc AI phải về đích càng 
+        # nhanh cành tốt để tránh bị trừ điểm 
         return self.livingReward
 
     def getStartState(self):
@@ -110,7 +121,9 @@ class Gridworld(mdp.MarkovDecisionProcess):
         """
         return state == self.grid.terminalState
 
-
+    # Hàm trả về 1 danh sách chứa tất cả các tọa độ mà agent có thể bị trượt tới 
+    # khi thực hiện 1 hành động kèm theo xác suất xảy ra kịch bản đó
+    # Trong Công thức Bellman, hàm này tính toán giá trị của T(s,a,s')
     def getTransitionStatesAndProbs(self, state, action):
         """
         Returns list of (nextState, prob) pairs
@@ -118,19 +131,27 @@ class Gridworld(mdp.MarkovDecisionProcess):
         from 'state' by taking 'action' along
         with their transition probabilities.
         """
-
+        # Nếu action không hợp lệ => Ném lỗi
         if action not in self.getPossibleActions(state):
             raise Exception("Illegal action!")
 
+        # Nếu agent đã ở trạng thái kết thúc, tức là không còn bước đi tiếp nào nữa
+        # thì trả về danh sách rỗng
         if self.isTerminal(state):
             return []
 
         x, y = state
 
+        # Trong Gridworld, các ô đích được lưu dưới dạng int hoặc float
+        # Nếu ô hiện tại là một con số, hành động tiếp theo sẽ đưa agent đến một trạng 
+        # thái đặc biệt gọi là terminalState (trạng thái kết thúc hoàn toàn) 
+        # với xác suất là 100%
         if type(self.grid[x][y]) == int or type(self.grid[x][y]) == float:
             termState = self.grid.terminalState
             return [(termState, 1.0)]
 
+        # Tính toán vị trí 4 hướng xem có va phải tường hoặc có ra ngoài biên không không. Nếu có 
+        # thì vị trí tiếp theo vẫn là vị trí hiện tại (state), ngược lại tọa độ ô tiếp theo sẽ là ô mới
         successors = []
 
         northState = (self.__isAllowed(y+1,x) and (x,y+1)) or state
@@ -138,6 +159,8 @@ class Gridworld(mdp.MarkovDecisionProcess):
         southState = (self.__isAllowed(y-1,x) and (x,y-1)) or state
         eastState = (self.__isAllowed(y,x+1) and (x+1,y)) or state
 
+        # noise là xác suất độ nhiễu = 20%
+        # Nếu đi theo trục dọc, bạn có xác suất 80% đi đúng, 10% lệch sang trái và 10% lệch sang phải
         if action == 'north' or action == 'south':
             if action == 'north':
                 successors.append((northState,1-self.noise))
@@ -148,6 +171,7 @@ class Gridworld(mdp.MarkovDecisionProcess):
             successors.append((westState,massLeft/2.0))
             successors.append((eastState,massLeft/2.0))
 
+        # Nếu đi theo trục ngang, bạn có xác suất 80% đi đúng, 10% lệch xuống dưới và 10% lệch lên trên
         if action == 'west' or action == 'east':
             if action == 'west':
                 successors.append((westState,1-self.noise))

@@ -21,41 +21,62 @@
 
 def question2():
     answerDiscount = 0.9
-    answerNoise = 0.2
+    # Ban đầu: answerNoise = 0.2
+    # Ta giảm noise xuống 0 để xác suất đi đúng hướng là 100%
+    answerNoise = 0.0
     return answerDiscount, answerNoise
 
+# Thích lỗi thoát gần và chấp nhận rủi ro 
 def question3a():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # Giảm discount về gần bằng 0 để chỉ quan tâm đích ngắn
+    answerDiscount = 0.2
+    # Giản noise về 0 để tự tin không bị ngã
+    answerNoise = 0
+    # Phạt nhẹ để về đích nhanh
+    answerLivingReward = -0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Thích lối thoát gần nhưng không chấp nhận rủi ro => Phải đi xa hơn
 def question3b():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # Quan tâm tới đích ngắn
+    answerDiscount = 0.2
+    # Có rủi ro
+    answerNoise = 0.2
+    answerLivingReward = -0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Thích lỗi thoát xa và chấp nhận rủi ro
 def question3c():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # Tăng discount gần bằng 1 để duy trì giá trị các phần thưởng ở xa
+    answerDiscount = 0.9
+    # Giản noise về 0 để tự tin không bị ngã ( Không rủi ro)
+    answerNoise = 0.0
+    answerLivingReward = -0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Thích lối thoát xa nhưng không chấp nhận rủi ro
 def question3d():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # Đích có giá trị
+    answerDiscount = 0.9
+    # Có rủi ro
+    answerNoise = 0.2
+    answerLivingReward = -0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Không quan tâm tới lối thoát và vực thẳm, agent sẽ đi lòng vòng để
+# tích điểm vô tận 
 def question3e():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # Giá trị các phần thưởng ở xa không bị giảm
+    answerDiscount = 1
+    # Không rủi ro
+    answerNoise = 0
+    # Thưởng cực lớn. Mỗi bước đi được cộng 10 điểm, trong khi về đích cao nhất cũng chỉ được 10 điểm. 
+    # Agent sẽ chọn đi lòng vòng để tích điểm vô tận.
+    answerLivingReward = 10
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
