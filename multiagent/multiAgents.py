@@ -74,8 +74,30 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
+        newCapsules=successorGameState.getCapsules()
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        #Question 1-hien
+        foodList = newFood.asList()
+        score = successorGameState.getScore()
+        
+        if foodList:
+            minFoodDist = min([util.manhattanDistance(newPos, food) for food in foodList])
+            score += 5.5 / (minFoodDist + 0.1) 
+        if newCapsules:
+            minCapDist = min([util.manhattanDistance(newPos, cap) for cap in newCapsules])
+            score += 10.0 / (minCapDist + 1.0)
+        for ghostState in newGhostStates:
+            distToGhost = min([util.manhattanDistance(newPos, ghostState.getPosition())])
+            if ghostState.scaredTimer > 0:
+                score += 200.0 / (distToGhost + 0.1)
+            else:
+                if distToGhost < 2:
+                    score -= 1000 
+                else:
+                    score -= 15.0 / (distToGhost + 0.1)
+        
+        return score
+
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
@@ -173,7 +195,34 @@ def betterEvaluationFunction(currentGameState: GameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    newCapsules = currentGameState.getCapsules()
+    
+    score = currentGameState.getScore()
+    
+    foodList = newFood.asList()
+    if foodList:
+        minFoodDist = min([util.manhattanDistance(newPos, food) for food in foodList])
+        score += 5.5 / (minFoodDist + 0.1)
+
+    if newCapsules:
+        minCapDist = min([util.manhattanDistance(newPos, cap) for cap in newCapsules])
+        score += 15.0 / (minCapDist + 1.0)
+    
+    for ghostState in newGhostStates:
+        distToGhost = util.manhattanDistance(newPos, ghostState.getPosition())
+        
+        if ghostState.scaredTimer > 0:
+            score += 210.0 / (distToGhost + 0.1)
+        else:
+            if distToGhost < 2:
+                score -= 1000 
+            else:
+                score -= 15.0 / (distToGhost + 0.1)
+
+    return score
 
 # Abbreviation
 better = betterEvaluationFunction
