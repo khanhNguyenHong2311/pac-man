@@ -229,7 +229,7 @@ class ApproximateQAgent(PacmanQAgent):
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
-    def final(self, state):
+    def final(self, state): 
         "Called at the end of each game."
         # call the super-class final method
         PacmanQAgent.final(self, state)
