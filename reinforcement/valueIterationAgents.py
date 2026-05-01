@@ -96,14 +96,13 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         return self.values[state]
 
-    # Hàm tính toán Q_value
+    # Hàm tính toán Q_value từ các giá trị của các ô V có sẵn (Tính Q từ V)
     def computeQValueFromValues(self, state, action):
         """
           Compute the Q-value of action in state from the
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        
         # Hàm stateAndProbs tính giá trị của T(s,a,s')
         stateAndProbs = self.mdp.getTransitionStatesAndProbs(state, action)
         sum = 0

@@ -113,6 +113,7 @@ class ReinforcementAgent(ValueEstimationAgent):
     #    Read These Functions          #
     ####################################
 
+    # Hàm này giống hàm getPossibleActions ở các Question trước
     def getLegalActions(self,state):
         """
           Get the actions available for a given

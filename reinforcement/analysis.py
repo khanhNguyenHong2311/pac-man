@@ -80,11 +80,19 @@ def question3e():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Câu này yêu cầu phải tìm bộ số epsilon và anpha sao cho trong tối đa 50 ván đấu, Agent học 
+# được cách đi đúng qua cái cầu (tỉ lệ thành công >= 99%). 
+
+# Nếu để e thấp, AI không dám đi liều => Không bao giờ thấy phần thường ở cuối cấp
+# Nếu để e cao, AI dám đi liều, nhưng vì liều nên sẽ liên tục bị rơi xuống cấu
+# Trong một môi trường mà "sai một ly đi một dặm" như cây cầu này, 50 ván là khoảng thời gian quá 
+# ngắn để thuật toán Q-Learning có thể vừa khám phá ra đường đi, vừa cập nhật đủ giá trị Q để khẳng định 
+# đó là đường tối ưu với độ tin cậy 99%. ==> NOT POSSIBLE
 def question7():
     answerEpsilon = None
     answerLearningRate = None
-    return answerEpsilon, answerLearningRate
     # If not possible, return 'NOT POSSIBLE'
+    return 'NOT POSSIBLE'   
 
 if __name__ == '__main__':
     print('Answers to analysis questions:')
