@@ -102,6 +102,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         return self.computeQValueFromValues(state, action)
 
 
+
 class PrioritizedSweepingValueIterationAgent(ValueIterationAgent):
     """
         * Please read learningAgents.py before reading this.*
@@ -120,5 +121,57 @@ class PrioritizedSweepingValueIterationAgent(ValueIterationAgent):
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
     def runValueIteration(self):
-        "*** YOUR CODE HERE ***"
+        # tạo dsach các set tiền nhiệm
+        predecessors = self.computeAllPredecessors()
+
+        pq = util.PriorityQueue()
+
+        # thêm tất cả các trạng thái kèm diff vào pq
+        for s in self.mdp.getStates():
+            if not self.mdp.isTerminal(s):
+                diff = self.computeDiff(s)
+                # min heap
+                pq.push(s, -diff)
+
+        # vòng lặp cập nhật maxQvalue
+        for i in range(self.iterations):
+
+            if pq.isEmpty():
+                break
+
+            s = pq.pop()
+            # cập nhật V(s)=Q max(s,a)
+            if not self.mdp.isTerminal(s):
+                actions = self.mdp.getPossibleActions(s)
+                self.values[s] = max([self.getQValue(s, a) for a in actions])
+
+            # duyệt tiền nhiệm của s để cập nhật tiếp
+            for p in predecessors[s]:
+                if not self.mdp.isTerminal(p):
+                    diff = self.computeDiff(p)
+                    if diff > self.theta:
+                        # cập nhật ưu tiên nếu p có sẵn trong pq
+                        pq.update(p, -diff)
+
+    def computeAllPredecessors(self):
+        #Mỗi state s 1 set tiền nhiệm
+        predecessors = {s: set() for s in self.mdp.getStates()}
+        for s in self.mdp.getStates():
+            if self.mdp.isTerminal(s):
+                continue
+            for action in self.mdp.getPossibleActions(s):
+                for next_state, prob in self.mdp.getTransitionStatesAndProbs(s, action):
+                    if prob > 0:
+                        predecessors[next_state].add(s)
+        return predecessors
+
+    def computeDiff(self, state):
+        #Tính toán sai số: |V(s) - max Q(s,a)|
+        actions = self.mdp.getPossibleActions(state)
+
+        if not actions:
+            return 0
+        
+        max_q = max([self.getQValue(state, action) for action in actions])
+        return abs(self.values[state] - max_q)
 
