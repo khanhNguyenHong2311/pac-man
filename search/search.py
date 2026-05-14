@@ -111,19 +111,18 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     queue = util.PriorityQueue()
     startLocation = problem.getStartState()
-    startNode = (startLocation, [], 0)
+    startNode = (startLocation, [], 0) #vị trí, đường đi, tổng chi phí
     queue.push(startNode, 0)
-    visitedLocation = set()
+    visited = set()
 
     while not queue.isEmpty():
-        # node[0] is location, while node[1] is path, while node[2] is cumulative cost
         node = queue.pop()
         if problem.isGoalState(node[0]):
             return node[1]
-        if node[0] not in visitedLocation:
-            visitedLocation.add(node[0])
+        if node[0] not in visited:
+            visited.add(node[0])
             for successor in problem.getSuccessors(node[0]):
-                if successor[0] not in visitedLocation:
+                if successor[0] not in visited:
                     cost = node[2] + successor[2]
                     totalCost = cost + heuristic(successor[0], problem)
                     queue.push((successor[0], node[1] + [successor[1]], cost), totalCost)
