@@ -22,31 +22,47 @@
 def question2():
     answerDiscount = 0.9
     answerNoise = 0.016
+    # Ban đầu: answerNoise = 0.2
+    # Ta giảm noise xuống gần 0 (hoặc bằng 0) để xác suất đi đúng hướng là 100%
     return answerDiscount, answerNoise
 
+# Thích lỗi thoát gần và chấp nhận rủi ro 
 def question3a():
+    # Giảm discount về gần bằng 0 để chỉ quan tâm đích ngắn
     answerDiscount = 0.1
+    # Giảm noise về 0 để tự tin không ngã (cân mọi rủi ro)
     answerNoise = 0
+    # Phạt nhẹ để pacman về đích sớm
+    # Nếu để livingReward dương thì mỗi bước đi pacman đều có thêm điểm => Pacman sẽ lòng vòng không kết thúc game
     answerLivingReward = -0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Thích lối thoát gần nhưng không chấp nhận rủi ro => Phải đi xa hơn
 def question3b():
+    # Quan tâm tới đích ngắn
     answerDiscount = 0.1
+    # Có rủi ro 
     answerNoise = 0.1
     answerLivingReward = -0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Thích lỗi thoát xa và chấp nhận rủi ro
 def question3c():
+    #  Quan tâm đích xa
     answerDiscount = 1
+    # Cân mọi rủi ro
     answerNoise = 0
     answerLivingReward = -0.01
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# Thích lối thoát xa nhưng không chấp nhận rủi ro ( né vực )
 def question3d():
+    # Đích có giá trị
     answerDiscount = 1
+    # Có rủi ro 
     answerNoise = 0.1
     answerLivingReward = -0.01
     return answerDiscount, answerNoise, answerLivingReward

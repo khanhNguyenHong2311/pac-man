@@ -45,6 +45,7 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         self.q_values = util.Counter()
 
+    # Hàm này trả về giá trị Q value.
     def getQValue(self, state, action):
         """
           Returns Q(state,action)
@@ -52,7 +53,10 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        return self.q_values[(state, action)]
+        if (state, action) in self.q_values:
+            return self.q_values[(state, action)]
+        else:
+            return 0.0
         util.raiseNotDefined()
 
     # Hàm này tính toán Vk dựa trên các Q_value có sẵn (Tính V từ Q)
@@ -117,6 +121,7 @@ class QLearningAgent(ReinforcementAgent):
           HINT: To pick randomly from a list, use random.choice(list)
         """
         # Pick Action
+        # Hàm này trả về hành động có thể thực hiện ở ô hiện tại
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
@@ -124,6 +129,7 @@ class QLearningAgent(ReinforcementAgent):
         if util.flipCoin(self.epsilon):
             action = random.choice(legalActions)
         else:
+            # Hàm này trả về hành động có Q value max ( hành động tốt nhất của trạng thái này)
             action = self.getPolicy(state)
 
         return action
@@ -142,16 +148,18 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        # Lấy giá trị Q hiện tại: Q(s, a)
+        # Lấy giá trị Q hiện tại: Q(s, a) trong công thức Bellman Q-Learning
         current_q = self.getQValue(state, action)
         
-        # Tính toán "Sample": R + gamma * Q(s', a') 
+        # Tính toán "Sample": Reward + gamma * Q(s', a') 
         # Q(s', a') là Qmax có thể đạt được từ trạng thái kế tiếp
-        # Chú ý: self.getValue(nextState) là Q(s', a') 
+        # Chú ý: self.getValue(nextState) là Q(s', a') ,cũng chính là giá trị V(s') trong công thức
+        # self.discount là gamma - hệ số chiết khấu
         sample = reward + self.discount * self.getValue(nextState)
         
         # Cập nhật giá trị Q mới vào bảng self.q_values
         # Công thức: Q(s,a) = (1 - alpha) * Q(s,a) + alpha * sample
+        # Trong đó anpha là hệ số học tập
         new_q = (1 - self.alpha) * current_q + self.alpha * sample
         self.q_values[(state, action)] = new_q
         
