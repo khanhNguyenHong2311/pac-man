@@ -134,42 +134,152 @@ class MinimaxAgent(MultiAgentSearchAgent):
     Your minimax agent (question 2)
     """
 
-    def getAction(self, gameState: GameState):
-        """
-        Returns the minimax action from the current gameState using self.depth
-        and self.evaluationFunction.
+    def getAction(self, gameState):
 
-        Here are some method calls that might be useful when implementing minimax.
+        def minimax(state, high, char):
+            if high  == self.depth or state.isWin() or state.isLose():
+                return self.evaluationFunction(state)
 
-        gameState.getLegalActions(agentIndex):
-        Returns a list of legal actions for an agent
-        agentIndex=0 means Pacman, ghosts are >= 1
+            if char == 0:
+                return maximize(state, high)
+            return minimize(state, high, char)
 
-        gameState.generateSuccessor(agentIndex, action):
-        Returns the successor game state after an agent takes an action
 
-        gameState.getNumAgents():
-        Returns the total number of agents in the game
 
-        gameState.isWin():
-        Returns whether or not the game state is a winning state
 
-        gameState.isLose():
-        Returns whether or not the game state is a losing state
-        """
-        "*** YOUR CODE HERE ***"
+        def maximize(state, high):
+            bestVal = float('-inf')
+            bestAction = None
+
+            for action in state.getLegalActions(0):
+                successor = state.generateSuccessor(0, action)
+                val = minimax(successor, high , 1)
+
+                if val > bestVal:
+                    bestVal = val
+                    bestAction = action
+
+            
+            if high== 0:
+                return bestAction
+
+            return bestVal
+
+
+
+
+
+        def minimize(state, high, char):
+            bestVal = float('inf')
+
+            for action in state.getLegalActions(char):
+                successor = state.generateSuccessor(char, action)
+
+                nextChar = char + 1
+                nextHigh = high
+
+                if nextChar == state.getNumAgents():
+                    nextChar = 0
+                    nextHigh += 1
+
+                val = minimax(successor, nextHigh, nextChar)
+                bestVal = min(bestVal, val)
+
+            return bestVal
+
+
+        return maximize(gameState, 0)
+
         util.raiseNotDefined()
+        
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
     Your minimax agent with alpha-beta pruning (question 3)
     """
-
+    
     def getAction(self, gameState: GameState):
         """
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+        
+
+        def minimax(state, char, high, a, b):
+
+            
+            if high == self.depth  or state.isWin() or state.isLose():
+                return self.evaluationFunction(state)
+
+            
+            if char == 0:
+                return maximize(state, char, high, a, b)
+            else:
+                return minimize(state, char, high, a, b)
+
+
+
+
+        def maximize(state, char, high, a, b):
+            bestVal = float('-inf')
+            bestAction = None
+
+            actions = state.getLegalActions(char)
+
+            for action in actions:
+                next_state = state.generateSuccessor(char, action)
+
+                val = minimax(next_state, char + 1, high, a,  b)
+
+                if val > bestVal:
+                    bestVal = val
+                    bestAction= action
+
+                
+                if bestVal > b:
+                    return bestVal
+
+                a = max(a, bestVal)
+
+            #root cần action
+            if high == 0:
+                return bestAction
+
+            return bestVal
+
+
+        def minimize(state, char, high, a, b):
+            bestVal = float('inf')
+
+            actions = state.getLegalActions(char)
+
+            for action in actions:
+                nextState = state.generateSuccessor(char, action)
+
+            
+                nextChar = char+ 1
+                nextHigh = high
+
+                if char == state.getNumAgents() - 1:
+                    nextChar = 0
+                    nextHigh = high + 1
+
+                val = minimax(nextState, nextChar, nextHigh, a, b)
+
+                if val < bestVal:
+                    bestVal = val
+
+                
+                if bestVal < a:
+                    return bestVal
+
+                b = min(b, bestVal)
+
+            return bestVal
+
+
+       
+        return maximize(gameState, 0, 0, float('-inf'), float('inf'))
         util.raiseNotDefined()
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -185,6 +295,88 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
+        
+
+        def expectimax(state, high, char):
+
+            if high == self.depth or state.isWin() or state.isLose():
+                return self.evaluationFunction(state)
+
+            
+            if char == 0:
+                return maximize(state, high)
+
+            return expectValue(state, high, char)
+
+
+
+
+
+        def maximize(state, high):
+
+            bestVal = float('-inf')
+
+            for action in state.getLegalActions(0):
+
+                successor = state.generateSuccessor(0, action)
+
+                val = expectimax(successor, high, 1)
+
+                if val > bestVal:
+                    bestVal = val
+
+            return bestVal
+
+
+
+
+
+        def expectValue(state, high, char):
+
+            actions = state.getLegalActions(char)
+
+            if len(actions) == 0:
+                return self.evaluationFunction(state)
+
+            total = 0
+
+            for action in actions:
+
+                successor = state.generateSuccessor(char, action)
+
+                nextChar = char + 1
+                nextHigh = high
+
+                if nextChar == state.getNumAgents():
+                    nextChar = 0
+                    nextHigh += 1
+
+                val = expectimax(successor, nextHigh, nextChar)
+
+                total += val
+
+            return total / len(actions)
+
+
+
+
+
+        bestVal = float('-inf')
+        bestAction = None
+
+        for action in gameState.getLegalActions(0):
+
+            successor = gameState.generateSuccessor(0, action)
+
+            val = expectimax(successor, 0, 1)
+
+            if val > bestVal:
+                bestVal = val
+                bestAction = action
+
+
+        return bestAction
+
         util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState: GameState):
