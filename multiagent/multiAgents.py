@@ -87,7 +87,7 @@ class ReflexAgent(Agent):
             minCapDist = min([util.manhattanDistance(newPos, cap) for cap in newCapsules])
             score += 10.0 / (minCapDist + 1.0)
         for ghostState in newGhostStates:
-            distToGhost = min([util.manhattanDistance(newPos, ghostState.getPosition())])
+            distToGhost = util.manhattanDistance(newPos, ghostState.getPosition())
             if ghostState.scaredTimer > 0:
                 score += 200.0 / (distToGhost + 0.1)
             else:
